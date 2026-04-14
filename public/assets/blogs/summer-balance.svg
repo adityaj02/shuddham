@@ -1,0 +1,7 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="40" fill="#F6EED9"/>
+  <circle cx="270" cy="214" r="126" fill="#E8C47D"/>
+  <circle cx="360" cy="314" r="50" fill="#FFF4DA"/>
+  <text x="618" y="354" fill="#27442C" font-size="66" font-family="Georgia, serif">Summer</text>
+  <text x="618" y="432" fill="#27442C" font-size="66" font-family="Georgia, serif">Balance</text>
+</svg>

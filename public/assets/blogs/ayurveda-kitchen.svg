@@ -1,0 +1,7 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="40" fill="#EEF1E7"/>
+  <circle cx="282" cy="232" r="108" fill="#88AE7E"/>
+  <circle cx="390" cy="354" r="82" fill="#B9CF9C"/>
+  <text x="620" y="336" fill="#27442C" font-size="66" font-family="Georgia, serif">Ayurvedic</text>
+  <text x="620" y="416" fill="#27442C" font-size="66" font-family="Georgia, serif">Kitchen</text>
+</svg>

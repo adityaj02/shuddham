@@ -1,0 +1,8 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" rx="48" fill="#F0E8D8"/>
+  <path d="M340 162H460V236C460 276 492 308 532 308V560C532 612 490 654 438 654H362C310 654 268 612 268 560V308C308 308 340 276 340 236V162Z" fill="#E2B043"/>
+  <rect x="340" y="130" width="120" height="54" rx="22" fill="#355B3D"/>
+  <rect x="308" y="320" width="184" height="246" rx="28" fill="#C68C24"/>
+  <text x="400" y="420" text-anchor="middle" fill="#FFF8EA" font-size="28" font-family="Verdana, sans-serif">COLD</text>
+  <text x="400" y="466" text-anchor="middle" fill="#FFF8EA" font-size="28" font-family="Verdana, sans-serif">PRESSED</text>
+</svg>

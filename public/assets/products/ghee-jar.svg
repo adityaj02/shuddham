@@ -1,0 +1,9 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" rx="48" fill="#F6EBD8"/>
+  <circle cx="400" cy="276" r="164" fill="#E8C47D"/>
+  <rect x="252" y="230" width="296" height="332" rx="56" fill="#FFF8EA"/>
+  <rect x="284" y="286" width="232" height="218" rx="34" fill="#D38D32"/>
+  <rect x="308" y="182" width="184" height="74" rx="28" fill="#3F6C47"/>
+  <text x="400" y="388" text-anchor="middle" fill="#FFF8EA" font-size="50" font-family="Georgia, serif">A2</text>
+  <text x="400" y="440" text-anchor="middle" fill="#FFF8EA" font-size="34" font-family="Verdana, sans-serif">GHEE</text>
+</svg>
