@@ -11,7 +11,7 @@ const BlogsPage = async () => {
   const archives = posts.slice(4);
 
   /* Unique categories for filter chips */
-  const categories = [...new Set(posts.map((p) => p.category))];
+  const categories = Array.from(new Set(posts.map((p) => p.category)));
 
   /* Category icon mapping */
   const categoryIcons: Record<string, string> = {
