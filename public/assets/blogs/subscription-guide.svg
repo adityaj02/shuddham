@@ -1,0 +1,7 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="40" fill="#EAF0E8"/>
+  <rect x="176" y="190" width="380" height="420" rx="48" fill="#FFF8EA"/>
+  <circle cx="366" cy="400" r="104" fill="#6F9B73"/>
+  <text x="648" y="360" fill="#27442C" font-size="62" font-family="Georgia, serif">Monthly</text>
+  <text x="648" y="438" fill="#27442C" font-size="62" font-family="Georgia, serif">Subscriptions</text>
+</svg>

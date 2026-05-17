@@ -1,0 +1,8 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="40" fill="#F4E4C5"/>
+  <circle cx="885" cy="220" r="140" fill="#DCA24B"/>
+  <rect x="172" y="168" width="340" height="430" rx="54" fill="#FFF8EA"/>
+  <rect x="210" y="250" width="264" height="276" rx="36" fill="#D38D32"/>
+  <text x="760" y="368" fill="#27442C" font-size="72" font-family="Georgia, serif">Bilona</text>
+  <text x="760" y="446" fill="#27442C" font-size="72" font-family="Georgia, serif">Ghee</text>
+</svg>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SHUDDHAM</string>
+    <string name="title_activity_main">SHUDDHAM</string>
+    <string name="package_name">com.shuddham.wellness</string>
+    <string name="custom_url_scheme">com.shuddham.wellness</string>
+</resources>

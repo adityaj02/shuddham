@@ -1,0 +1,8 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" rx="48" fill="#EEF1E7"/>
+  <rect x="168" y="238" width="464" height="332" rx="44" fill="#FFF9EE"/>
+  <rect x="220" y="312" width="120" height="180" rx="26" fill="#D38D32"/>
+  <rect x="358" y="282" width="88" height="210" rx="24" fill="#E8A727"/>
+  <rect x="474" y="300" width="104" height="192" rx="24" fill="#88AE7E"/>
+  <text x="400" y="610" text-anchor="middle" fill="#355B3D" font-size="34" font-family="Georgia, serif">WELLNESS BUNDLE</text>
+</svg>

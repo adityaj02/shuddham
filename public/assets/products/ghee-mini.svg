@@ -1,0 +1,9 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" rx="48" fill="#F3E4C2"/>
+  <circle cx="400" cy="304" r="140" fill="#D9A84E"/>
+  <rect x="286" y="252" width="228" height="280" rx="48" fill="#FFF9EE"/>
+  <rect x="314" y="300" width="172" height="184" rx="28" fill="#B87522"/>
+  <rect x="326" y="210" width="148" height="62" rx="24" fill="#345A3B"/>
+  <text x="400" y="392" text-anchor="middle" fill="#FFF8EA" font-size="44" font-family="Georgia, serif">A2</text>
+  <text x="400" y="440" text-anchor="middle" fill="#FFF8EA" font-size="26" font-family="Verdana, sans-serif">DAILY</text>
+</svg>
