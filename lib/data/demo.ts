@@ -44,7 +44,7 @@ export const demoCategories: Category[] = [
   },
 ];
 
-export const demoProducts: Product[] = [
+export const demoProducts = [
   {
     id: "prod-brahmi-powder",
     categoryId: "cat-mental-wellness",
@@ -395,7 +395,7 @@ export const demoProducts: Product[] = [
     createdAt: now,
     updatedAt: now,
   },
-];
+] as unknown as Product[];
 
 export const demoReviews: Review[] = [
   {
@@ -461,7 +461,6 @@ export const demoUser: AppUser = {
   avatarUrl: null,
   role: "customer",
   defaultAddressId: "addr-demo-1",
-  cartSnapshot: [],
   createdAt: now,
   updatedAt: now,
 };
