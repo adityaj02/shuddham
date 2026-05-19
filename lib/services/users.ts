@@ -250,9 +250,11 @@ export const syncCartSnapshot = async (authId: string, items: CartItem[]) => {
   
   if (!cart) {
     const { data: newCart, error } = await supabase.from("carts").insert({ user_id: user.id }).select("id").single();
-    if (error) throw new Error(error.message);
+    if (error || !newCart) throw new Error(error?.message || "Failed to create cart");
     cart = newCart;
   }
+
+  if (!cart) throw new Error("Cart not found");
 
   // Replace items
   await supabase.from("cart_items").delete().eq("cart_id", cart.id);
