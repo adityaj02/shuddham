@@ -49,7 +49,7 @@ export const getProducts = async (filters: ProductFilters = {}) => {
       .filter((product) => (filters.featured ? product.isFeatured : true))
       .filter((product) =>
         filters.search
-          ? `${product.name} ${product.subtitle} ${product.tags.join(" ")}`
+          ? `${product.name} ${product.subtitle} ${(product.tags || []).join(" ")}`
               .toLowerCase()
               .includes(filters.search.toLowerCase())
           : true
