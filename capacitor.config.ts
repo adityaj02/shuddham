@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   appName: 'SHUDDHAM',
   webDir: 'out',
   server: {
-    url: 'https://shuddham.vercel.app',
+    url: 'https://shuddham-main.vercel.app',
   }
 };
 
