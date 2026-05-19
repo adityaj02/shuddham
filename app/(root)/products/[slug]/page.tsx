@@ -49,7 +49,7 @@ const ProductDetailsPage = async ({
         {/* Image */}
         <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-container-low group">
           <Image
-            src={product.images[0]}
+            src={product.primaryImage || ""}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -112,7 +112,7 @@ const ProductDetailsPage = async ({
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {product.tags.map((tag: string) => (
+            {(product.tags || []).map((tag: string) => (
               <span
                 key={tag}
                 className="text-[10px] text-on-secondary-fixed-variant bg-secondary-container px-3 py-1 rounded-full uppercase tracking-widest font-medium"
@@ -133,7 +133,7 @@ const ProductDetailsPage = async ({
           </div>
 
           {/* Certifications */}
-          {product.certifications.length > 0 && (
+          {product.certifications && product.certifications.length > 0 && (
             <div className="grid gap-3 sm:grid-cols-2 pt-4 border-t border-outline-variant/20">
               {product.certifications.map((item: string) => (
                 <div key={item} className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low">
@@ -149,7 +149,7 @@ const ProductDetailsPage = async ({
       {/* ─── Product Details + Highlights ─────────────────────────────── */}
       <section className="grid gap-8 lg:grid-cols-2">
         {/* Metadata */}
-        {Object.keys(product.metadata).length > 0 && (
+        {product.metadata && Object.keys(product.metadata).length > 0 && (
           <div className="bg-surface-container-lowest rounded-xl p-8 space-y-6">
             <h2 className="font-headline text-2xl text-primary">Product Details</h2>
             <div className="space-y-4">

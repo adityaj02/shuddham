@@ -44,7 +44,7 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, withGooeyEffect = true, onClick, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, withGooeyEffect = false, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     const buttonRef = React.useRef<HTMLButtonElement>(null)
 
@@ -52,43 +52,44 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       if (!withGooeyEffect) return;
       const target = e.currentTarget;
       
-      const particleCount = 8;
-      const animationTime = 400;
-      
-      for (let i = 0; i < particleCount; i++) {
-        const t = animationTime * 2 + (Math.random() - 0.5) * 400;
-        const angle = (Math.random() * 360) * (Math.PI / 180);
-        const dist = 30 + Math.random() * 40;
-        const endX = dist * Math.cos(angle);
-        const endY = dist * Math.sin(angle);
-        const rotate = (Math.random() - 0.5) * 200;
-
-        const particle = document.createElement('span');
-        const point = document.createElement('span');
-        particle.classList.add('particle');
+      requestAnimationFrame(() => {
+        const particleCount = 8;
+        const animationTime = 400;
         
-        // Random colors for the "changing color effect"
-        const colors = ['#17281a', '#4c644d', '#cbe7ca', '#8ba889'];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        for (let i = 0; i < particleCount; i++) {
+          const t = animationTime * 2 + (Math.random() - 0.5) * 400;
+          const angle = (Math.random() * 360) * (Math.PI / 180);
+          const dist = 30 + Math.random() * 40;
+          const endX = dist * Math.cos(angle);
+          const endY = dist * Math.sin(angle);
+          const rotate = (Math.random() - 0.5) * 200;
 
-        particle.style.setProperty('--start-x', '0px');
-        particle.style.setProperty('--start-y', '0px');
-        particle.style.setProperty('--end-x', `${endX}px`);
-        particle.style.setProperty('--end-y', `${endY}px`);
-        particle.style.setProperty('--time', `${t}ms`);
-        particle.style.setProperty('--scale', `${0.8 + Math.random() * 0.5}`);
-        particle.style.setProperty('--rotate', `${rotate}deg`);
+          const particle = document.createElement('span');
+          const point = document.createElement('span');
+          particle.classList.add('particle');
+          
+          const colors = ['#17281a', '#4c644d', '#cbe7ca', '#8ba889'];
+          const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-        point.classList.add('point');
-        point.style.background = randomColor;
-        
-        particle.appendChild(point);
-        target.appendChild(particle);
+          particle.style.setProperty('--start-x', '0px');
+          particle.style.setProperty('--start-y', '0px');
+          particle.style.setProperty('--end-x', `${endX}px`);
+          particle.style.setProperty('--end-y', `${endY}px`);
+          particle.style.setProperty('--time', `${t}ms`);
+          particle.style.setProperty('--scale', `${0.8 + Math.random() * 0.5}`);
+          particle.style.setProperty('--rotate', `${rotate}deg`);
 
-        setTimeout(() => {
-          try { target.removeChild(particle); } catch { /* ignore */ }
-        }, t);
-      }
+          point.classList.add('point');
+          point.style.background = randomColor;
+          
+          particle.appendChild(point);
+          target.appendChild(particle);
+
+          setTimeout(() => {
+            try { target.removeChild(particle); } catch { /* ignore */ }
+          }, t);
+        }
+      });
     };
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -67,20 +67,22 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
     const card = cardRef.current;
     if (!card) return;
 
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const dx = x - cx;
-    const dy = y - cy;
+    requestAnimationFrame(() => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const dx = x - cx;
+      const dy = y - cy;
 
-    if (dx === 0 && dy === 0) return;
-    const radians = Math.atan2(dy, dx);
-    let degrees = radians * (180 / Math.PI) + 90;
-    if (degrees < 0) degrees += 360;
+      if (dx === 0 && dy === 0) return;
+      const radians = Math.atan2(dy, dx);
+      let degrees = radians * (180 / Math.PI) + 90;
+      if (degrees < 0) degrees += 360;
 
-    card.style.setProperty('--cursor-angle', `${degrees.toFixed(1)}deg`);
+      card.style.setProperty('--cursor-angle', `${degrees.toFixed(1)}deg`);
+    });
   }, []);
 
   const glowVars = buildGlowVars(glowColor, glowIntensity);

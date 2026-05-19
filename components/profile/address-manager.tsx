@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Address } from "@/types";
-import { upsertAddress } from "@/lib/services/users";
+import { saveAddressJSON } from "@/lib/actions/address.actions";
 import { toast } from "@/components/ui/use-toast";
 import { LocationDetector } from "@/components/shared/location-detector";
 import { type DetectedAddress } from "@/lib/utils/location";
@@ -59,7 +59,7 @@ export const AddressManager = ({ userId, initialAddresses }: AddressManagerProps
     };
 
     try {
-      const newAddress = await upsertAddress(userId, input);
+      const newAddress = await saveAddressJSON(input);
       if (newAddress) {
         setAddresses([newAddress, ...addresses]);
         setIsAdding(false);

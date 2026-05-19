@@ -32,3 +32,20 @@ export const saveAddressAction = async (formData: FormData) => {
   revalidatePath("/dashboard");
   revalidatePath("/checkout");
 };
+
+export const saveAddressJSON = async (input: any) => {
+  const session = await requireUser();
+  const appUser = await ensureUserRecord(session.user);
+
+  if (!appUser) {
+    throw new Error("User record not found.");
+  }
+
+  const payload = addressSchema.parse(input);
+  const newAddress = await upsertAddress(appUser.id, payload);
+  
+  revalidatePath("/dashboard");
+  revalidatePath("/checkout");
+  
+  return newAddress;
+};

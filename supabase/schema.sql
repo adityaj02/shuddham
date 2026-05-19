@@ -33,9 +33,17 @@ create table if not exists users (
   avatar_url text,
   role user_role not null default 'customer',
   default_address_id uuid,
-  cart_snapshot jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())
+);
+
+-- CARTS
+create table if not exists carts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  unique (user_id)
 );
 
 -- LOGIN TRACKING (Audit Log)
@@ -75,15 +83,48 @@ create table if not exists products (
   stock integer not null default 0,
   is_active boolean not null default true,
   is_featured boolean not null default false,
-  images jsonb not null default '[]'::jsonb,
-  tags jsonb not null default '[]'::jsonb,
+  primary_image text,
   certifications jsonb not null default '[]'::jsonb,
   nutrition_highlights jsonb not null default '[]'::jsonb,
   metadata jsonb not null default '{}'::jsonb,
   rating numeric(3,2) not null default 0,
   review_count integer not null default 0,
   created_at timestamptz not null default timezone('utc', now()),
-  updated_at timestamptz not null default timezone('utc', now())
+  updated_at timestamptz not null default timezone('utc', now()),
+  deleted_at timestamptz
+);
+
+-- PRODUCT IMAGES
+create table if not exists product_images (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references products(id) on delete cascade,
+  image_url text not null,
+  blurhash text,
+  alt_text text,
+  width integer,
+  height integer,
+  sort_order integer default 0,
+  is_primary boolean default false,
+  created_at timestamptz not null default timezone('utc', now())
+);
+
+-- PRODUCT TAGS
+create table if not exists product_tags (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references products(id) on delete cascade,
+  tag text not null,
+  created_at timestamptz not null default timezone('utc', now())
+);
+
+-- CART ITEMS
+create table if not exists cart_items (
+  id uuid primary key default gen_random_uuid(),
+  cart_id uuid not null references carts(id) on delete cascade,
+  product_id uuid not null references products(id) on delete cascade,
+  quantity integer not null,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  unique(cart_id, product_id)
 );
 
 -- ADDRESSES
@@ -158,7 +199,8 @@ create table if not exists reviews (
   rating integer not null check (rating between 1 and 5),
   verified_purchase boolean not null default false,
   created_at timestamptz not null default timezone('utc', now()),
-  updated_at timestamptz not null default timezone('utc', now())
+  updated_at timestamptz not null default timezone('utc', now()),
+  unique(user_id, product_id)
 );
 
 -- 5. Indexes for Performance
@@ -166,6 +208,8 @@ create index if not exists idx_users_auth_id on users(auth_id);
 create index if not exists idx_users_email on users(email);
 create index if not exists idx_products_category on products(category_id);
 create index if not exists idx_products_slug on products(slug);
+create index if not exists idx_products_active on products(is_active);
+create index if not exists idx_products_featured on products(is_featured);
 create index if not exists idx_orders_user on orders(user_id);
 create index if not exists idx_order_items_order on order_items(order_id);
 create index if not exists idx_addresses_user on addresses(user_id);
@@ -180,6 +224,8 @@ create trigger set_addresses_updated_at before update on addresses for each row 
 create trigger set_orders_updated_at before update on orders for each row execute procedure set_updated_at();
 create trigger set_order_items_updated_at before update on order_items for each row execute procedure set_updated_at();
 create trigger set_reviews_updated_at before update on reviews for each row execute procedure set_updated_at();
+create trigger set_carts_updated_at before update on carts for each row execute procedure set_updated_at();
+create trigger set_cart_items_updated_at before update on cart_items for each row execute procedure set_updated_at();
 
 -- 7. Row Level Security Policies (Production Hardening)
 alter table users enable row level security;
@@ -188,12 +234,18 @@ alter table orders enable row level security;
 alter table order_items enable row level security;
 alter table reviews enable row level security;
 alter table logins enable row level security;
+alter table carts enable row level security;
+alter table cart_items enable row level security;
+alter table product_images enable row level security;
+alter table product_tags enable row level security;
 
 -- Public read access for catalog
 alter table categories enable row level security;
 alter table products enable row level security;
 create policy "Anyone can view categories" on categories for select using (true);
-create policy "Anyone can view active products" on products for select using (is_active = true);
+create policy "Anyone can view active products" on products for select using (is_active = true and deleted_at is null);
+create policy "Anyone can view product images" on product_images for select using (true);
+create policy "Anyone can view product tags" on product_tags for select using (true);
 
 -- Users can only see/edit their own profiles
 create policy "Users can view own profile" on users for select using (auth.uid() = auth_id);
@@ -211,3 +263,26 @@ create policy "Auth users can create reviews" on reviews for insert with check (
 
 -- Logins
 create policy "Users can view own login history" on logins for select using (user_id in (select id from users where auth_id = auth.uid()));
+
+-- Carts
+create policy "Users can manage own cart" on carts for all using (user_id in (select id from users where auth_id = auth.uid()));
+create policy "Users can manage own cart items" on cart_items for all using (cart_id in (select id from carts where user_id in (select id from users where auth_id = auth.uid())));
+
+-- 8. Site Reviews (public visitor reviews on homepage)
+create table if not exists site_reviews (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  phone text not null,
+  rating integer not null check (rating between 1 and 5),
+  review text not null,
+  approved boolean not null default false,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
+create index if not exists idx_site_reviews_approved on site_reviews(approved);
+create trigger set_site_reviews_updated_at before update on site_reviews for each row execute procedure set_updated_at();
+
+alter table site_reviews enable row level security;
+create policy "Anyone can view approved site reviews" on site_reviews for select using (approved = true);
+create policy "Anyone can submit site reviews" on site_reviews for insert with check (true);

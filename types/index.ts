@@ -20,9 +20,35 @@ export type AppUser = {
   avatarUrl: string | null;
   role: "customer" | "admin";
   defaultAddressId: string | null;
-  cartSnapshot: CartItem[];
   createdAt: string;
   updatedAt: string;
+};
+
+export type Cart = {
+  id: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProductImage = {
+  id: string;
+  productId: string;
+  imageUrl: string;
+  blurhash: string | null;
+  altText: string | null;
+  width: number | null;
+  height: number | null;
+  sortOrder: number;
+  isPrimary: boolean;
+  createdAt: string;
+};
+
+export type ProductTag = {
+  id: string;
+  productId: string;
+  tag: string;
+  createdAt: string;
 };
 
 export type Category = {
@@ -49,8 +75,9 @@ export type Product = {
   stock: number;
   isActive: boolean;
   isFeatured: boolean;
-  images: string[];
-  tags: string[];
+  primaryImage: string | null;
+  images?: string[];
+  tags?: string[];
   certifications: string[];
   nutritionHighlights: string[];
   rating: number;
@@ -58,9 +85,12 @@ export type Product = {
   metadata: Record<string, string>;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
 };
 
 export type CartItem = {
+  id?: string;
+  cartId?: string;
   productId: string;
   slug: string;
   name: string;
@@ -68,6 +98,8 @@ export type CartItem = {
   price: number;
   quantity: number;
   stock: number;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Address = {

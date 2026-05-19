@@ -24,7 +24,7 @@ export const AddToCartButton = ({
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      image: product.images[0],
+      image: product.primaryImage || '',
       price: product.price,
       quantity: 1,
       stock: product.stock,

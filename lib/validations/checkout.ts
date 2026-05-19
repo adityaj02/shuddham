@@ -4,10 +4,10 @@ const cartItemSchema = z.object({
   productId: z.string().min(1),
   slug: z.string().min(1),
   name: z.string().min(1),
-  image: z.string().min(1),
+  image: z.string().catch(""),
   price: z.coerce.number().min(1),
   quantity: z.coerce.number().int().min(1),
-  stock: z.coerce.number().int().min(0),
+  stock: z.coerce.number().int().min(0).catch(100),
 });
 
 export const checkoutSchema = z.object({

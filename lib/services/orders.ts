@@ -105,7 +105,7 @@ export const createOrder = async ({
     address_id: addressId,
     order_number: generateOrderNumber(),
     status: "pending",
-    payment_gateway: gateway === "cod" ? "razorpay" : gateway, // Map 'cod' to 'razorpay' to avoid DB enum error
+    payment_gateway: gateway === "cod" ? "razorpay" : gateway, // DB enum lacks 'cod'; track via notes
     payment_status: "pending",
     subtotal: totals.subtotal,
     shipping_amount: totals.shippingAmount,

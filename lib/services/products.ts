@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { slugify } from "@/lib/utils";
 import type { Product, ProductFilters, Review } from "@/types";
 import type { ProductInput } from "@/lib/validations/product";
+import { redis } from "@/lib/redis";
 
 const withCategory = (product: Product) => ({
   ...product,
@@ -13,11 +14,26 @@ const withCategory = (product: Product) => ({
 export const getCategories = async () => {
   if (!hasSupabaseEnv) return demoCategories;
 
+  const CACHE_KEY = "categories";
+  try {
+    const cached = await redis.get(CACHE_KEY);
+    if (cached) return cached as any[];
+  } catch (e) {
+    console.warn("Redis cache miss for categories", e);
+  }
+
   const supabase = createSupabaseAdminClient();
   if (!supabase) return demoCategories;
 
   const { data, error } = await supabase.from("categories").select("*").order("name");
   if (error || !data || data.length === 0) return demoCategories;
+  
+  try {
+    await redis.set(CACHE_KEY, data, { ex: 3600 });
+  } catch (e) {
+    console.warn("Redis set error for categories", e);
+  }
+  
   return data;
 };
 
@@ -41,13 +57,22 @@ export const getProducts = async (filters: ProductFilters = {}) => {
       .map(withCategory);
   }
 
+  const CACHE_KEY = `products:${JSON.stringify(filters)}`;
+  try {
+    const cached = await redis.get(CACHE_KEY);
+    if (cached) return cached as Product[];
+  } catch (e) {
+    console.warn("Redis cache miss for products", e);
+  }
+
   const supabase = createSupabaseAdminClient();
   if (!supabase) return demoProducts.map(withCategory);
 
   let query = supabase
     .from("products")
-    .select("*, categories(*)")
+    .select("*, categories(*), product_tags(tag), product_images(image_url)")
     .eq("is_active", true)
+    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   if (filters.featured) {
@@ -69,7 +94,7 @@ export const getProducts = async (filters: ProductFilters = {}) => {
   const { data, error } = await query;
   if (error || !data || data.length === 0) return demoProducts.map(withCategory);
 
-  return data.map((row: any) => ({
+  const formattedProducts = data.map((row: any) => ({
     id: row.id,
     categoryId: row.category_id,
     slug: row.slug,
@@ -84,8 +109,11 @@ export const getProducts = async (filters: ProductFilters = {}) => {
     stock: row.stock,
     isActive: row.is_active,
     isFeatured: row.is_featured,
-    images: row.images ?? [],
-    tags: row.tags ?? [],
+    primaryImage: row.primary_image,
+    images: row.product_images && row.product_images.length > 0 
+      ? row.product_images.map((i: any) => i.image_url) 
+      : (row.primary_image ? [row.primary_image] : []),
+    tags: row.product_tags ? row.product_tags.map((t: any) => t.tag) : [],
     certifications: row.certifications ?? [],
     nutritionHighlights: row.nutrition_highlights ?? [],
     rating: row.rating,
@@ -93,8 +121,17 @@ export const getProducts = async (filters: ProductFilters = {}) => {
     metadata: row.metadata ?? {},
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    deletedAt: row.deleted_at ?? null,
     category: row.categories,
   }));
+
+  try {
+    await redis.set(CACHE_KEY, formattedProducts, { ex: 3600 });
+  } catch (e) {
+    console.warn("Redis set error for products", e);
+  }
+
+  return formattedProducts;
 };
 
 export const getFeaturedProducts = async () => getProducts({ featured: true });
@@ -205,8 +242,7 @@ export const upsertProduct = async (input: ProductInput) => {
     stock: input.stock,
     is_featured: input.isFeatured ?? false,
     is_active: input.isActive ?? true,
-    images: [input.image],
-    tags: [],
+    primary_image: input.image,
     certifications: [],
     nutrition_highlights: [],
     rating: 0,
@@ -231,6 +267,7 @@ export const upsertProduct = async (input: ProductInput) => {
         stock: input.stock,
         isActive: input.isActive ?? true,
         isFeatured: input.isFeatured ?? false,
+        primaryImage: input.image,
         images: [input.image],
         tags: [],
         certifications: [],
@@ -240,6 +277,7 @@ export const upsertProduct = async (input: ProductInput) => {
         metadata: {},
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        deletedAt: null,
       }),
       mode: "demo",
     };
@@ -270,7 +308,7 @@ export const deleteProduct = async (id: string) => {
   const supabase = createSupabaseAdminClient();
   if (!supabase) return { success: false };
 
-  const { error } = await supabase.from("products").delete().eq("id", id);
+  const { error } = await supabase.from("products").update({ deleted_at: new Date().toISOString() }).eq("id", id);
   if (error) {
     throw new Error(error.message);
   }

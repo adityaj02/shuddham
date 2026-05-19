@@ -27,7 +27,7 @@ export const ProductCard = ({
         <div className="bg-white rounded-2xl overflow-hidden transition-all duration-300 soft-elevation group relative border border-outline-variant/10">
           {/* Tags */}
           <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-            {product.tags.slice(0, 2).map((tag) => (
+            {(product.tags || []).slice(0, 2).map((tag) => (
               <span
                 key={tag}
                 className="bg-primary/90 text-white text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded"
@@ -41,7 +41,7 @@ export const ProductCard = ({
           <Link href={`/products/${product.slug}`}>
             <div className="aspect-[4/5] overflow-hidden bg-surface-container-low">
               <Image
-                src={product.images[0]}
+                src={product.primaryImage || ''}
                 alt={product.name}
                 width={320}
                 height={400}
@@ -97,7 +97,7 @@ export const ProductCard = ({
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-surface-container-low">
           <Image
-            src={product.images[0]}
+            src={product.primaryImage || ''}
             alt={product.name}
             width={400}
             height={500}

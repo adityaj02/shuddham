@@ -13,7 +13,6 @@ const mapUserRow = (row: any): AppUser => ({
   avatarUrl: row.avatar_url,
   role: row.role,
   defaultAddressId: row.default_address_id,
-  cartSnapshot: row.cart_snapshot ?? [],
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -196,22 +195,76 @@ export const upsertAddress = async (userId: string, input: AddressInput) => {
   return mapAddressRow(data);
 };
 
-export const getCartSnapshot = async (authId: string | null | undefined) => {
+export const getCartSnapshot = async (authId: string | null | undefined): Promise<CartItem[]> => {
+  if (!authId) return [];
   const user = await getUserByAuthId(authId);
-  return user?.cartSnapshot ?? [];
+  if (!user) return [];
+
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("carts")
+    .select(`
+      id,
+      cart_items (
+        id,
+        quantity,
+        products (
+          id,
+          slug,
+          name,
+          primary_image,
+          price,
+          stock
+        )
+      )
+    `)
+    .eq("user_id", user.id)
+    .single();
+
+  if (error || !data || !data.cart_items) return [];
+
+  return data.cart_items.map((item: any) => ({
+    id: item.id,
+    cartId: data.id,
+    productId: item.products.id,
+    slug: item.products.slug,
+    name: item.products.name,
+    image: item.products.primary_image || "",
+    price: item.products.price,
+    quantity: item.quantity,
+    stock: item.products.stock,
+  }));
 };
 
 export const syncCartSnapshot = async (authId: string, items: CartItem[]) => {
+  const user = await getUserByAuthId(authId);
+  if (!user) return items;
+
   const supabase = createSupabaseAdminClient();
   if (!supabase) return items;
 
-  const { error } = await supabase
-    .from("users")
-    .update({ cart_snapshot: items })
-    .eq("auth_id", authId);
+  // Get or create cart
+  let { data: cart } = await supabase.from("carts").select("id").eq("user_id", user.id).single();
+  
+  if (!cart) {
+    const { data: newCart, error } = await supabase.from("carts").insert({ user_id: user.id }).select("id").single();
+    if (error) throw new Error(error.message);
+    cart = newCart;
+  }
 
-  if (error) {
-    throw new Error(error.message);
+  // Replace items
+  await supabase.from("cart_items").delete().eq("cart_id", cart.id);
+  
+  if (items.length > 0) {
+    const cartItemsData = items.map(item => ({
+      cart_id: cart.id,
+      product_id: item.productId,
+      quantity: item.quantity
+    }));
+    const { error } = await supabase.from("cart_items").insert(cartItemsData);
+    if (error) throw new Error(error.message);
   }
 
   return items;

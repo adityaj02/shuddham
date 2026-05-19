@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { formatCurrency } from "@/lib/utils";
 import { cancelOrderAction } from "@/lib/actions/orders";
 import { useToast } from "@/components/ui/use-toast";
@@ -90,7 +91,7 @@ export const OrderList = ({ orders }: { orders: Order[] }) => {
                     <div key={item.id} className="flex justify-between items-center gap-4 group/item">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-surface-container-low rounded-lg p-1 flex items-center justify-center">
-                          <img src={item.image} alt={item.productName} className="w-full h-full object-contain grayscale-[0.5] group-hover/item:grayscale-0 transition-all" />
+                          <Image width={64} height={64} src={item.image} alt={item.productName} className="w-full h-full object-contain grayscale-[0.5] group-hover/item:grayscale-0 transition-all" />
                         </div>
                         <div>
                           <p className="text-sm font-bold text-primary lowercase first-letter:uppercase">{item.productName}</p>

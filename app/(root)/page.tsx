@@ -5,6 +5,7 @@ import { getBlogPosts } from "@/lib/services/content";
 import { getFeaturedProducts } from "@/lib/services/products";
 import { formatCurrency } from "@/lib/utils";
 import BorderGlow from "@/components/ui/BorderGlow";
+import { HomeReviewForm } from "@/components/shared/home-review-form";
 
 const HomePage = async () => {
   const [featuredProducts, blogPosts] = await Promise.all([
@@ -119,18 +120,19 @@ const HomePage = async () => {
                 colors={['#17281a', '#4c644d', '#cbe7ca']}
               >
                 <div className="relative aspect-[4/5] bg-surface-container-low rounded-lg mb-4 overflow-hidden group/img cursor-pointer">
-                  <Link href={`/products/${product.slug}`} className="block w-full h-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <Image 
-                      className="object-cover w-full h-full group-hover/img:scale-105 transition-transform duration-700" 
-                      alt={product.name} 
-                      src={product.images[0]}
-                      fill
-                      sizes="280px"
-                      priority={index === 0}
-                    />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <Image 
+                    className="object-cover w-full h-full group-hover/img:scale-105 transition-transform duration-700" 
+                    alt={product.name} 
+                    src={product.primaryImage || ''}
+                    fill
+                    sizes="280px"
+                    priority={index === 0}
+                  />
+                  <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10">
+                    <span className="sr-only">View {product.name}</span>
                   </Link>
-                  {product.tags && product.tags.length > 0 && (
+                  {product.tags && (product.tags?.length || 0) > 0 && (
                     <div className="absolute top-2 left-2 pointer-events-none">
                       <span className={`${badgeColors} text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded-full backdrop-blur-md`}>
                         {product.tags[0].replace("-", " ")}
@@ -164,37 +166,31 @@ const HomePage = async () => {
           <Link href="/blogs" className="block text-tertiary-fixed-dim text-sm font-medium underline underline-offset-4 decoration-tertiary cursor-pointer hover:opacity-80 hover:text-tertiary transition-opacity">Read All</Link>
         </div>
         <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 select-none">
-          {blogPosts.map((post, index) => {
-            const cardThemes = [
-              "bg-secondary-container text-on-secondary-fixed-variant text-primary",
-              "bg-tertiary-container/30 text-on-tertiary-fixed-variant text-primary",
-              "bg-surface-container-high text-primary text-primary"
-            ];
-            const activeTheme = cardThemes[index % cardThemes.length];
-            const [bgClass, tagColor, titleColor] = activeTheme.split(" ");
-            
+          {blogPosts.map((post) => {
             return (
-              <BorderGlow
+              <Link 
                 key={post.id}
-                className={`min-w-[300px] h-64 ${bgClass} rounded-xl overflow-hidden shrink-0 transition-transform duration-300 block`}
-                backgroundColor="transparent"
-                glowColor="120 40 40"
-                borderRadius={12}
-                glowRadius={20}
-                glowIntensity={0.8}
-                colors={['#17281a', '#4c644d', '#cbe7ca']}
+                href={`/blogs/${post.slug}`} 
+                className="relative min-w-[300px] h-64 rounded-xl overflow-hidden shrink-0 block group cursor-pointer"
               >
-                <Link href={`/blogs/${post.slug}`} className="w-full h-full p-6 flex flex-col justify-between">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                  src={post.coverImage || ''} 
+                  alt={post.title} 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30"></div>
+                <div className="absolute inset-0 p-6 flex flex-col justify-between text-white z-10">
                   <div>
-                    <span className={`text-[10px] font-bold tracking-widest uppercase ${tagColor}`}>{post.category}</span>
-                    <h4 className={`font-headline text-2xl mt-2 leading-tight ${titleColor}`}>{post.title}</h4>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-primary-container drop-shadow-sm">{post.category}</span>
+                    <h4 className="font-headline text-2xl mt-2 leading-tight line-clamp-3 text-balance pr-4 drop-shadow-md">{post.title}</h4>
                   </div>
-                  <div className="flex justify-between items-center text-xs opacity-70">
+                  <div className="flex justify-between items-center text-xs opacity-90 drop-shadow-sm">
                     <span>{post.readTime}</span>
-                    <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>arrow_forward</span>
+                    <span className="material-symbols-outlined transition-transform group-hover:translate-x-1" style={{ fontVariationSettings: "'FILL' 0" }}>arrow_forward</span>
                   </div>
-                </Link>
-              </BorderGlow>
+                </div>
+              </Link>
             )
           })}
         </div>
@@ -209,6 +205,24 @@ const HomePage = async () => {
           <p className="font-label text-[10px] tracking-[0.2em] uppercase text-on-surface-variant">
             Inspired by Sushruta Samhita
           </p>
+        </div>
+      </section>
+
+      {/* Customer Reviews Section */}
+      <section className="pb-8">
+        <div className="text-center mb-8">
+          <p className="font-label text-[10px] tracking-[0.25em] uppercase text-on-surface-variant mb-2">
+            We value your voice
+          </p>
+          <h3 className="font-headline text-2xl text-primary">
+            Share Your Experience
+          </h3>
+          <p className="text-sm text-on-surface-variant mt-2 max-w-sm mx-auto">
+            Your feedback helps us craft better Ayurvedic rituals for everyone.
+          </p>
+        </div>
+        <div className="max-w-md mx-auto bg-surface-container-low rounded-2xl p-6 sm:p-8 border border-outline-variant/10 shadow-sm">
+          <HomeReviewForm />
         </div>
       </section>
     </div>

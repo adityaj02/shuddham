@@ -3,7 +3,7 @@ export const siteConfig = {
   shortName: "SHUDDHAM",
   description:
     "Doctor-verified, 100% natural Ayurvedic formulations for modern daily rituals.",
-  supportEmail: "care@shuddham.com",
+  supportEmail: "shivskukreja@gmail.com",
   whatsappNumber: "+919876543210",
 };
 

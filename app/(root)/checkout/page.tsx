@@ -14,7 +14,7 @@ const CheckoutPage = async () => {
         <p className="badge-soft">Checkout</p>
         <h1 className="section-title mt-3">Secure Payment</h1>
       </div>
-      <CheckoutClient addresses={addresses} />
+      <CheckoutClient addresses={addresses} user={appUser} />
     </div>
   );
 };

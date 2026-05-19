@@ -168,7 +168,7 @@ const ProductsPage = async ({
             {/* Large Feature */}
             <Link href={`/products/${bentoMain.slug}`} className="bento-card-wide bg-surface-container relative rounded-xl overflow-hidden p-8 md:p-12 flex flex-col justify-end min-h-[400px] group block">
               <Image
-                src={bentoMain.images[0]}
+                src={bentoMain.primaryImage || ''}
                 alt={bentoMain.name}
                 fill
                 className="object-cover opacity-60 mix-blend-multiply group-hover:scale-105 transition-transform duration-1000"
@@ -190,7 +190,7 @@ const ProductsPage = async ({
             <Link href={`/products/${bentoSide.slug}`} className="bento-card-tall bg-surface-container-high rounded-xl overflow-hidden flex flex-col group block">
               <div className="h-1/2 overflow-hidden relative">
                 <Image
-                  src={bentoSide.images[0]}
+                  src={bentoSide.primaryImage || ''}
                   alt={bentoSide.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -232,7 +232,7 @@ const ProductsPage = async ({
                 <Link href={`/products/${product.slug}`} className="block">
                   <div className="aspect-square rounded-lg overflow-hidden relative">
                     <Image
-                      src={product.images[0]}
+                      src={product.primaryImage || ''}
                       alt={product.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"

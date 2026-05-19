@@ -111,10 +111,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
       void textRef.current.offsetWidth;
       textRef.current.classList.add('active');
     }
-
-    // Spawn particles at the clicked element
-    makeParticles(element);
-  }, [activeIndex, updateEffectPosition, onItemClick, makeParticles]);
+  }, [activeIndex, updateEffectPosition, onItemClick]);
 
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;

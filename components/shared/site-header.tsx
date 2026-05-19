@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
@@ -67,7 +68,7 @@ export const SiteHeader = () => {
                 <>
                   <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary/20 bg-primary/10 flex items-center justify-center shrink-0">
                     {user.user_metadata?.avatar_url ? (
-                      <img
+                      <Image width={150} height={40}
                         src={user.user_metadata.avatar_url}
                         alt="Profile"
                         className="h-full w-full object-cover"
@@ -185,7 +186,7 @@ export const SiteHeader = () => {
                 className="group relative h-9 w-9 overflow-hidden rounded-full border-2 border-primary/20 hover:border-primary transition-all duration-300 bg-primary/10 flex items-center justify-center"
               >
                 {user.user_metadata?.avatar_url ? (
-                  <img
+                  <Image width={150} height={40}
                     src={user.user_metadata.avatar_url}
                     alt="Profile"
                     className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
