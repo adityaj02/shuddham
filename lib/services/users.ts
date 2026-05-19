@@ -256,12 +256,14 @@ export const syncCartSnapshot = async (authId: string, items: CartItem[]) => {
 
   if (!cart) throw new Error("Cart not found");
 
+  const cartId = cart.id;
+
   // Replace items
-  await supabase.from("cart_items").delete().eq("cart_id", cart.id);
+  await supabase.from("cart_items").delete().eq("cart_id", cartId);
   
   if (items.length > 0) {
     const cartItemsData = items.map(item => ({
-      cart_id: cart.id,
+      cart_id: cartId,
       product_id: item.productId,
       quantity: item.quantity
     }));
