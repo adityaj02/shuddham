@@ -6,11 +6,14 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
 
-  // Determine where to redirect after login — always use the real app URL
-  // so it works from any device (phone, tablet, etc.)
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : origin);
+  // Determine where to redirect after login
+  // Prevent redirecting to localhost if the app is running in production (e.g., if env var is misconfigured)
+  let appUrl = origin;
+  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+    appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  } else if (process.env.VERCEL_URL) {
+    appUrl = `https://${process.env.VERCEL_URL}`;
+  }
 
   if (code) {
     // Create a mutable response so we can write the session cookie onto it

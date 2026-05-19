@@ -13,10 +13,13 @@ export const GoogleLoginButton = () => {
     if (!supabase) return;
     setIsLoading(true);
     try {
-      // Always use the configured app URL so the redirect works from any device
-      // (phone, tablet, desktop) without needing to whitelist dynamic IPs in Supabase.
-      // Make sure NEXT_PUBLIC_APP_URL in .env.local matches what's in Supabase Auth → Redirect URLs.
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      // Use window.location.origin as the primary source of truth so OAuth
+      // always redirects back to the actual host (Vercel, localhost, etc.).
+      // Only fall back to NEXT_PUBLIC_APP_URL if it's NOT a localhost URL,
+      // which prevents mobile devices from being redirected to localhost:3000.
+      const configuredUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+      const isLocalhost = configuredUrl.includes("localhost") || configuredUrl.includes("127.0.0.1");
+      const appUrl = !isLocalhost && configuredUrl ? configuredUrl : window.location.origin;
 
       // Preserve the ?next= param so after OAuth the callback can redirect correctly
       const next = searchParams.get("next") ?? "/";
